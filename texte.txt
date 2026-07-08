@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ديجي-فلو | صانع ومورد المنتجات الرقمية</title>
+    <!-- Tailwind CSS لإنشاء واجهة بريميوم عصرية -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- خطوط جوجل - خط Tajawal للمظهر الاحترافي -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* تأثيرات حركية خفيفة */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- شريط التنقل العلوي -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- الشعار والاسم -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.467 5.99 5.99 0 0 0-1.925 3.546 5.974 5.974 0 0 1-2.133-1A3.75 3.75 0 0 0 12 18Z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black text-slate-900 tracking-tight">ديجي-فلو <span class="text-indigo-600 font-bold">DigiFlow</span></h1>
+                        <p class="text-[10px] text-slate-500 font-medium">صناعة وتوريد المنتجات الرقمية الاحترافية</p>
+                    </div>
+                </div>
+
+                <!-- إحصائيات سريعة في الهيدر -->
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-100 text-xs font-bold">
+                        <span>رصيد التراخيص المتاحة:</span>
+                        <span id="header-licence-count">142 ترخيص</span>
+                    </div>
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-xs font-semibold text-slate-600 hidden md:inline">اتصال بوابة المتاجر: نشط ✓</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- الهيكل الرئيسي للمنصة (تخطيط لوحة تحكم Sidebar + Content) -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <!-- القائمة الجانبية (Sidebar) -->
+        <aside class="w-full lg:w-64 shrink-0 flex flex-col gap-2">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
+                <p class="text-[11px] font-bold text-slate-400 px-3 uppercase tracking-wider mb-2">القائمة الرئيسية</p>
+                
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all bg-indigo-50 text-indigo-700">
+                    <span class="text-lg">📊</span>
+                    <span>لوحة التحكم الرئيسية</span>
+                </button>
+
+                <button onclick="switchTab('creator')" id="btn-creator" class="sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                    <span class="text-lg">🎨</span>
+                    <span>صانع المنتجات الرقمية</span>
+                </button>
+
+                <button onclick="switchTab('sourcing')" id="btn-sourcing" class="sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all text-slate-600 hover:bg-slate-50 relative">
+                    <span class="text-lg">📦</span>
+                    <span>مستودع التوريد والـ PLR</span>
+                    <span class="absolute top-3 left-3 px-1.5 py-0.5 bg-amber-500 text-white text-[9px] font-bold rounded-full">جديد</span>
+                </button>
+
+                <button onclick="switchTab('licensing')" id="btn-licensing" class="sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                    <span class="text-lg">🔑</span>
+                    <span>مولد التراخيص والتسليم</span>
+                </button>
+
+                <button onclick="switchTab('integrations')" id="btn-integrations" class="sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all text-slate-600 hover:bg-slate-50">
+                    <span class="text-lg">🔗</span>
+                    <span>بوابات المتاجر والربط</span>
+                </button>
+            </div>
+
+            <!-- معلومات المساعدة السريعة -->
+            <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-5 rounded-2xl shadow-md relative overflow-hidden mt-2">
+                <div class="absolute -top-12 -left-12 w-28 h-28 bg-indigo-500/20 rounded-full blur-xl"></div>
+                <h4 class="font-bold text-xs text-indigo-300">💡 نصيحة توريد رقمية:</h4>
+                <p class="text-xs text-slate-200 mt-2 leading-relaxed">
+                    قم باستيراد الكتب الإلكترونية برخصة إعادة البيع (PLR)، ثم أعد تصميم غلافها هنا، وصدرها لمتجرك لتحقيق ربح صافٍ بنسبة 100%!
+                </p>
+            </div>
+        </aside>
+
+        <!-- منطقة المحتوى الرئيسية المتفاعلة (Main Content Panel) -->
+        <main class="flex-1 min-w-0">
+            
+            <!-- 1. لوحة التحكم الرئيسية (Dashboard Tab) -->
+            <div id="tab-dashboard" class="tab-content active space-y-6">
+                <!-- إحصائيات علوية -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-400 font-bold">إجمالي المنتجات المجهزة</p>
+                            <h3 class="text-2xl font-black text-slate-900" id="stat-products-count">6 منتجات</h3>
+                        </div>
+                        <span class="text-3xl p-3 bg-indigo-50 rounded-xl">📦</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-400 font-bold">تراخيص تم توريدها</p>
+                            <h3 class="text-2xl font-black text-slate-900">1,240 ترخيص</h3>
+                        </div>
+                        <span class="text-3xl p-3 bg-emerald-50 rounded-xl">🔑</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-400 font-bold">الربط البرمجي للمتاجر</p>
+                            <h3 class="text-sm font-bold text-emerald-600">نشط (سلة & جومرود)</h3>
+                        </div>
+                        <span class="text-3xl p-3 bg-sky-50 rounded-xl">⚡</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="space-y-1">
+                            <p class="text-xs text-slate-400 font-bold">الأرباح التقديرية للبيع</p>
+                            <h3 class="text-2xl font-black text-indigo-600">8,450 ر.س</h3>
+                        </div>
+                        <span class="text-3xl p-3 bg-amber-50 rounded-xl">💵</span>
+                    </div>
+                </div>
+
+                <!-- المنتجات النشطة ومخطط التوريد -->
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">مستودع المنتجات الرقمية الخاص بك</h3>
+                            <p class="text-xs text-slate-500">المنتجات التي قمت بصنعها وتجهيز تراخيصها للتوريد الفوري للمشترين</p>
+                        </div>
+                        <button onclick="switchTab('creator')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-colors">
+                            + صنع منتج رقمي جديد
+                        </button>
+                    </div>
+
+                    <!-- جدول المنتجات الرقمية النشطة -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold text-xs">
+                                    <th class="p-4">اسم المنتج الرقمي</th>
+                                    <th class="p-4">النوع / التصنيف</th>
+                                    <th class="p-4">سعر البيع المقترح</th>
+                                    <th class="p-4">حالة التراخيص والتوريد</th>
+                                    <th class="p-4">الإجراءات والربط</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- سيتم تعبئة المنتجات ديناميكياً بواسطة جافا سكريبت -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- نصائح للنجاح في توريد المنتجات -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                        <div class="absolute right-0 bottom-0 translate-x-4 translate-y-4 text-white opacity-10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-40 h-40">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-black">أكثر المنتجات الرقمية طلباً لعام 2026 📈</h4>
+                        <ul class="mt-4 space-y-2 text-xs text-emerald-100">
+                            <li class="flex items-center gap-2">🟢 <strong>المنظمات الرقمية (Digital Planners):</strong> ممتازة للآيباد ومحبي التخطيط اليومي.</li>
+                            <li class="flex items-center gap-2">🟢 <strong>الكتب الإلكترونية المتخصصة:</strong> خاصة في الذكاء الاصطناعي والتجارة الرقمية.</li>
+                            <li class="flex items-center gap-2">🟢 <strong>قوالب Notion و Canva:</strong> سهلة التوريد ومرغوبة جداً للشركات والأفراد.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-900">مراحل التوريد السلس عبر ديجي-فلو</h4>
+                        <div class="relative pl-4 space-y-4 text-xs">
+                            <div class="flex gap-3">
+                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                                <p class="text-slate-600"><strong>احصل على قالب مرخص:</strong> استورد قالب عالي الجودة من مستودع الـ PLR والترخيص لدينا.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                                <p class="text-slate-600"><strong>التخصيص والتصميم:</strong> أدخل لمستودع الصانع، غير اسم المنتج وأنشئ له غلافاً جذاباً بلمستك الخاصة.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                                <p class="text-slate-600"><strong>توليد المفاتيح والربط:</strong> اربط منتجك بمفاتيح التراخيص أو رابط التحميل الآمن وصدره فوراً لمتجرك.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. صانع المنتجات الرقمية (Product Creator Tab) -->
+            <div id="tab-creator" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- نموذج التعبئة والإنشاء (اليسار) -->
+                    <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900">مصنع المنتجات الرقمية الذكي</h3>
+                            <p class="text-xs text-slate-500 mt-1">أدخل بيانات المنتج ومواصفاته لتوليد المنتج وصياغة غلافه بشكل احترافي وجاهز للبيع.</p>
+                        </div>
+
+                        <!-- نموذج الإدخال -->
+                        <form id="creator-form" onsubmit="event.preventDefault(); handleCreateProduct();" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-slate-600">اسم المنتج الرقمي *</label>
+                                    <input type="text" id="p-title" required placeholder="مثال: كتاب أسرار الدروبشيبينغ" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-slate-600">نوع المنتج / التصنيف *</label>
+                                    <select id="p-category" onchange="updateCategoryIcon()" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                        <option value="ebook">كتاب إلكتروني (E-book)</option>
+                                        <option value="template">منظم / قالب جاهز (Notion/Excel/Canva)</option>
+                                        <option value="course">كورس / دليل مصور (Video/Audio)</option>
+                                        <option value="software">تطبيق / ترخيص برمجيات (License Key)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-600">الوصف التسويقي للمنتج</label>
+                                <textarea id="p-desc" rows="3" placeholder="اكتب وصفاً جذاباً يشرح أهم الفوائد التي سيحصل عليها المشتري من المنتج..." class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-slate-600">السعر المقترح للبيع (ر.س) *</label>
+                                    <input type="number" id="p-price" required placeholder="مثال: 49" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold text-slate-600">نمط الغلاف الافتراضي (Mockup Style) *</label>
+                                    <select id="p-mockup-style" onchange="updateMockupPreview()" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                        <option value="gradient-purple">تدرج بنفسجي ملكي</option>
+                                        <option value="gradient-emerald">تدرج أخضر نضِر</option>
+                                        <option value="gradient-sunset">تدرج الغسق الدافئ</option>
+                                        <option value="dark-slate">مظهر رمادي داكن حديث</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- رابط الملف الحقيقي للمنتج بعد الشراء -->
+                            <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 space-y-2">
+                                <label class="text-xs font-bold text-slate-700 block">رابط تحميل الملف النهائي (يستلمه المشتري آلياً) *</label>
+                                <div class="flex gap-2">
+                                    <input type="url" id="p-file-link" required placeholder="https://drive.google.com/file/d/..." class="flex-1 p-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none">
+                                    <button type="button" onclick="generateMockFileLink()" class="px-3 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-xl text-xs font-bold transition-all">
+                                        توليد ملف تجريبي
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- زر الحفظ والإنشاء -->
+                            <div class="pt-2">
+                                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md shadow-indigo-100 flex items-center justify-center gap-2">
+                                    <span>⚙️</span>
+                                    <span>صناعة المنتج وإضافته للمستودع</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- معاينة غلاف المنتج الحيّة (اليمين) -->
+                    <div class="lg:col-span-5 flex flex-col gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                            <h4 class="font-bold text-slate-900 text-sm">معاينة الغلاف الرقمي ثلاثي الأبعاد (Live Mockup)</h4>
+                            
+                            <!-- الغلاف المنتج عبر CSS و SVG -->
+                            <div id="mockup-container" class="w-full aspect-[3/4] rounded-2xl p-8 flex flex-col justify-between text-white relative overflow-hidden transition-all duration-300 shadow-xl bg-gradient-to-tr from-indigo-800 via-indigo-600 to-violet-500">
+                                <!-- تأثيرات خلفية فنية -->
+                                <div class="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                                <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-black/20 rounded-full blur-2xl"></div>
+
+                                <!-- ترويسة الغلاف -->
+                                <div class="flex items-center justify-between relative z-10">
+                                    <span class="text-[10px] font-bold tracking-widest bg-white/20 px-3 py-1 rounded-full uppercase" id="preview-tag">كتاب إلكتروني بريميوم</span>
+                                    <span class="text-lg" id="preview-icon">📘</span>
+                                </div>
+
+                                <!-- محتوى العنوان والوصف -->
+                                <div class="space-y-3 relative z-10">
+                                    <p class="text-xs font-bold text-indigo-200/90 tracking-wide">إصدار ديجي-فلو الحصري</p>
+                                    <h3 class="text-2xl font-black leading-tight drop-shadow-sm" id="preview-title">عنوان منتجك الرقمي يظهر هنا</h3>
+                                    <p class="text-[11px] text-slate-100/80 line-clamp-2" id="preview-desc">هنا يظهر مقتطف قصير من وصف منتجك الرائع لجذب انتباه العملاء وزيادة رغبتهم بالشراء فوراً.</p>
+                                </div>
+
+                                <!-- أسفل الغلاف -->
+                                <div class="border-t border-white/10 pt-4 flex items-center justify-between relative z-10">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px]">👤</div>
+                                        <span class="text-[10px] font-bold">بواسطتك</span>
+                                    </div>
+                                    <span class="text-lg font-black" id="preview-price">49 ر.س</span>
+                                </div>
+                            </div>
+
+                            <p class="text-center text-[11px] text-slate-400">هذا هو الغلاف الافتراضي للمنتج الرقمي الذي سيعرض للعملاء على متجر البيع الإلكتروني الخاص بك.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. دليل ومستودع التوريد والـ PLR (Sourcing Tab) -->
+            <div id="tab-sourcing" class="tab-content space-y-6">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-black text-slate-900">مستودع التوريد والـ PLR الجاهز للاستيراد</h3>
+                            <p class="text-xs text-slate-500">اختر من مكتبة المنتجات الرقمية ذات حقوق إعادة البيع (Private Label Rights)، استوردها وعدل عليها فوراً لبيعها بملكيتك الكاملة.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1.5 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border border-amber-100">رخصة بيع كاملة 🔓</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- شبكة منتجات التوريد والـ PLR -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- كرت توريد 1 -->
+                    <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2 py-1 bg-violet-50 text-violet-700 text-[10px] font-bold rounded">كتب رقمية جاهزة</span>
+                                <span class="text-2xl">📘</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900">كتاب: دليل البدء في التجارة الرقمية 2026</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">كتاب شامل من 50 صفحة مرخص بالكامل لإعادة التوزيع والبيع. يشرح أساسيات بناء المتاجر واختيار النيتش والمنتجات الرقمية الأكثر ربحية.</p>
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 text-xs">
+                                <p class="text-slate-600">💼 <strong>حقوق الترخيص:</strong> رخصة PLR غير محدودة (إعادة بيع).</p>
+                                <p class="text-slate-600">📁 <strong>صيغة الملف المستلم:</strong> PDF قابل للتعديل + ملف Word.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-600">توريد مجاني</span>
+                            <button onclick="importPLRProduct('ebook-trading')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5">
+                                📥 استيراد وتخصيص
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- كرت توريد 2 -->
+                    <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded">قوالب Canva / Notion</span>
+                                <span class="text-2xl">🗓️</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900">قالب: مخطط الأهداف والإنتاجية السنوية لعام 2026</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">أجندة ومنظم رقمي متكامل مصمم بشكل جمالي وعصري على Notion و Canva. مخصص للأشخاص الراغبين في تنظيم مهامهم اليومية ومشاريعهم العملية.</p>
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 text-xs">
+                                <p class="text-slate-600">💼 <strong>حقوق الترخيص:</strong> ترخيص تجاري كامل (أعد بيعه كقالبك الخاص).</p>
+                                <p class="text-slate-600">📁 <strong>صيغة الملف المستلم:</strong> رابط قالب Notion + قالب Canva للغلاف.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-600">توريد مجاني</span>
+                            <button onclick="importPLRProduct('planner-2026')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5">
+                                📥 استيراد وتخصيص
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- كرت توريد 3 -->
+                    <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2 py-1 bg-sky-50 text-sky-700 text-[10px] font-bold rounded">كورسات وحقائب رقمية</span>
+                                <span class="text-2xl">🎥</span>
+                            </div>
+                            <h4 class="font-extrabold text-slate-900">حقيبة: كورس إنشاء المحتوى باستخدام الذكاء الاصطناعي</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">حقيبة فيديو تدريبية تحتوي على 6 شروحات مفصلة حول كيفية تسخير ChatGPT و Midjourney لإنشاء محتوى لشبكات التواصل الاجتماعي والربح منه.</p>
+                            <div class="bg-slate-50 p-3 rounded-xl space-y-1.5 text-xs">
+                                <p class="text-slate-600">💼 <strong>حقوق الترخيص:</strong> رخصة توزيع تجارية كاملة.</p>
+                                <p class="text-slate-600">📁 <strong>صيغة الملف المستلم:</strong> مجلد Google Drive يحتوي الفيديوهات بجودة عالية.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-600">توريد مجاني</span>
+                            <button onclick="importPLRProduct('course-ai')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5">
+                                📥 استيراد وتخصيص
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. مولد التراخيص والتسليم الآمن (Licensing Tab) -->
+            <div id="tab-licensing" class="tab-content space-y-6">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">نظام توليد وإدارة مفاتيح الترخيص</h3>
+                        <p class="text-xs text-slate-500 mt-1">تستخدم هذه الأداة لحماية منتجاتك الرقمية (مثل تطبيقات، اشتراكات، كتب، أو قوالب بريميوم). لكي لا يقوم المشتري بمشاركتها مع الجميع، قم بتوليد مفاتيح ترخيص وتسجيلها هنا لضمان استخدام آمن ومحدود للمشتري.</p>
+                    </div>
+
+                    <!-- مولد المفاتيح التفاعلي -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-slate-800 text-sm">توليد مفاتيح تراخيص جديدة</h4>
+                            
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-600">بادئة مفتاح الترخيص (Prefix) *</label>
+                                <input type="text" id="lic-prefix" placeholder="مثال: NOTION-PRO" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-slate-600">الكمية المطلوب توليدها *</label>
+                                <select id="lic-quantity" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                    <option value="5">5 مفاتيح ترخيص فريدة</option>
+                                    <option value="10" selected>10 مفاتيح ترخيص فريدة</option>
+                                    <option value="20">20 مفتاح ترخيص فريد</option>
+                                    <option value="50">50 مفتاح ترخيص فريد</option>
+                                </select>
+                            </div>
+
+                            <button onclick="generateLicenseKeys()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                                ⚡ توليد المفاتيح وحفظها آلياً
+                            </button>
+                        </div>
+
+                        <!-- قائمة المفاتيح التي تم إنشاؤها للتو -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 space-y-3 flex flex-col justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-xs">قائمة المفاتيح المولدة والمحفوظة (مفاتيح نشطة)</h4>
+                                <p class="text-[10px] text-slate-500">انسخ المفاتيح المتاحة هنا أو اربطها بمتجرك آلياً عبر الـ API للتسليم التلقائي للمشترين فور الدفع.</p>
+                            </div>
+
+                            <!-- مربع عرض المفاتيح -->
+                            <div class="bg-white border border-slate-200 p-3 rounded-xl max-h-40 overflow-y-auto text-xs font-mono space-y-1 text-slate-700" id="generated-keys-list">
+                                <!-- سيتم توليد المفاتيح وعرضها هنا ديناميكياً -->
+                                <span class="text-slate-400 block text-center py-4">لا توجد مفاتيح تولدت للتو. حدد البادئة واضغط زر التوليد.</span>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button onclick="copyGeneratedKeys()" class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-lg transition-all">
+                                    📋 نسخ الكل
+                                </button>
+                                <button onclick="clearKeysList()" class="py-2 px-3 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg transition-all">
+                                    حذف المؤقت
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. بوابات المتاجر والربط (Integrations Tab) -->
+            <div id="tab-integrations" class="tab-content space-y-6">
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">ربط وتصدير المنتجات للمتاجر الإلكترونية</h3>
+                        <p class="text-xs text-slate-500 mt-1">تتيح لك منصة ديجي-فلو تصدير المنتج الرقمي وملف التحميل ومفتاح الترخيص الخاص به إلى متجرك الإلكتروني المفضل بضغطة زر واحدة لتسهيل البيع الآلي والتسليم الذاتي.</p>
+                    </div>
+
+                    <!-- قنوات الربط المتوفرة -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- قناة سلة -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">جاهز للربط</span>
+                                    <span class="text-xl">🇸🇦</span>
+                                </div>
+                                <h4 class="font-extrabold text-slate-900">منصة سلة (Salla)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">اربط حساب التاجر لتنزيل المنتجات الرقمية والتراخيص آلياً في متجر سلة الخاص بك.</p>
+                            </div>
+                            <button onclick="simulateIntegration('Salla')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all">
+                                ربط متجر سلة الخاص بي ⚡
+                            </button>
+                        </div>
+
+                        <!-- قناة زد -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">جاهز للربط</span>
+                                    <span class="text-xl">💜</span>
+                                </div>
+                                <h4 class="font-extrabold text-slate-900">منصة زد (Zid)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">ربط فوري للمخزون والتراخيص بمتجرك على زد لتسليم آمن للمشترين.</p>
+                            </div>
+                            <button onclick="simulateIntegration('Zid')" class="w-full py-2.5 bg-indigo-900 hover:bg-indigo-950 text-white font-bold text-xs rounded-xl transition-all">
+                                ربط متجر زد الخاص بي ⚡
+                            </button>
+                        </div>
+
+                        <!-- قناة جومرود -->
+                        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">جاهز للربط</span>
+                                    <span class="text-xl">🌸</span>
+                                </div>
+                                <h4 class="font-extrabold text-slate-900">جومرود (Gumroad)</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">الخيار المثالي لبيع المنتجات الرقمية عالمياً بالدولار والوصول للمشترين بكفاءة.</p>
+                            </div>
+                            <button onclick="simulateIntegration('Gumroad')" class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl transition-all">
+                                ربط حساب Gumroad ⚡
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <footer class="bg-slate-900 text-slate-400 mt-auto border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs space-y-2">
+            <p class="font-bold text-white">ديجي-فلو | منصة صناعة وتوريد المنتجات الرقمية الآمنة لعام 2026</p>
+            <p class="text-slate-500">برمجة وتصميم الواجهة الذكية لمساعدة رواد الأعمال والمصنعين الرقميين في الوطن العربي.</p>
+        </div>
+    </footer>
+
+
+    <!-- ================== نافذة منبثقة للتصدير والمحاكاة ================== -->
+    <div id="export-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 animate-scale-up space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span>🚀</span> تصدير وتوريد المنتج للمتاجر
+                </h3>
+                <button onclick="closeExportModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors">
+                    ✕
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-indigo-50 text-indigo-800 rounded-xl space-y-1.5 text-xs border border-indigo-100">
+                    <p>📦 <strong>المنتج المراد تصديره:</strong> <span id="modal-product-title" class="font-bold">اسم المنتج</span></p>
+                    <p>💰 <strong>السعر المرفوع:</strong> <span id="modal-product-price" class="font-bold">0</span> ر.س</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-600 block">اختر المتجر لتصدير المنتج وتوريده إليه فوراً:</label>
+                    <select id="modal-store-select" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none bg-white">
+                        <option value="salla">متجري على سلة (Salla) - نشط</option>
+                        <option value="gumroad">حسابي في جومرود (Gumroad) - نشط</option>
+                        <option value="zid">متجري على زد (Zid) - غير متصل</option>
+                    </select>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded-xl text-[10px] text-slate-500 leading-relaxed">
+                    * عند التصدير، ستقوم ديجي-فلو برفع بيانات المنتج وملف التحميل آلياً، وسينشأ قسم للتراخيص في متجرك لتسليم المفاتيح تلقائياً عند إتمام الدفع.
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="executeExportSimulation()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all shadow-md">
+                    تصدير وتوريد الآن ⚡
+                </button>
+                <button onclick="closeExportModal()" class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all">
+                    إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ================== توست لإشعارات النظام السريعة ================== -->
+    <div id="toast" class="fixed bottom-6 left-6 z-50 bg-slate-900 text-white py-3.5 px-6 rounded-2xl shadow-xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300 max-w-sm">
+        <span id="toast-icon">✨</span>
+        <p id="toast-message" class="text-xs sm:text-sm font-bold">تم حفظ التغييرات بنجاح!</p>
+    </div>
+
+
+    <!-- ================== برمجة جافا سكريبت التفاعلية ================== -->
+    <script>
+        // داتابيز المنتجات النشطة بالمنصة (نموذج محاكاة محلي)
+        let activeInventory = [
+            {
+                id: "prod-1",
+                title: "منظم ومخطط الإنتاجية الشخصية 2026",
+                category: "template",
+                categoryAr: "منظم وقوالب جاهزة",
+                price: 39,
+                licencesCount: "تراخيص لا نهائية",
+                fileLink: "https://drive.google.com/file/d/planner-preview-test",
+                style: "gradient-purple"
+            },
+            {
+                id: "prod-2",
+                title: "دليل إتقان الذكاء الاصطناعي للمسوقين",
+                category: "ebook",
+                categoryAr: "كتاب إلكتروني",
+                price: 49,
+                licencesCount: "تراخيص لا نهائية",
+                fileLink: "https://drive.google.com/file/d/ai-marketing-guide",
+                style: "gradient-emerald"
+            },
+            {
+                id: "prod-3",
+                title: "مفاتيح اشتراكات Notion Pro السنوية",
+                category: "software",
+                categoryAr: "ترخيص برمجيات",
+                price: 199,
+                licencesCount: "14 مفتاح متاح",
+                fileLink: "https://notion.so/pro-redeem-guide",
+                style: "dark-slate"
+            }
+        ];
+
+        // قائمة تراخيص تم توليدها مؤخراً
+        let temporaryGeneratedKeys = [];
+
+        // إدارة فتح التبويبات والمفاتيح
+        function switchTab(tabId) {
+            // إخفاء جميع التبويبات أولاً
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // إظهار التبويب المطلوب
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // تغيير مظهر الأزرار الجانبية
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
+                btn.className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all text-slate-600 hover:bg-slate-50";
+            });
+            // تحديد الزر النشط
+            document.getElementById(`btn-${tabId}`).className = "sidebar-btn w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-all bg-indigo-50 text-indigo-700";
+        }
+
+        // تحديث إحصائيات لوحة التحكم ديناميكياً
+        function updateDashboardStats() {
+            document.getElementById("stat-products-count").innerText = `${activeInventory.length} منتجات`;
+            
+            const tbody = document.getElementById("inventory-table-body");
+            tbody.innerHTML = "";
+
+            activeInventory.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.className = "border-b border-slate-100 hover:bg-slate-50/50 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-4 font-bold text-slate-900 flex items-center gap-3">
+                        <span class="text-xl p-1.5 bg-slate-100 rounded-lg">${getCategoryEmoji(item.category)}</span>
+                        <div class="space-y-0.5">
+                            <span class="block text-sm max-w-[220px] truncate" title="${item.title}">${item.title}</span>
+                            <span class="block text-[10px] text-indigo-600 font-bold">رمز المنتج: ${item.id}</span>
+                        </div>
+                    </td>
+                    <td class="p-4 text-xs font-semibold text-slate-500">${item.categoryAr}</td>
+                    <td class="p-4 text-sm font-bold text-slate-900">${item.price} ر.س</td>
+                    <td class="p-4 text-xs font-bold text-emerald-600">${item.licencesCount}</td>
+                    <td class="p-4 flex gap-2">
+                        <button onclick="openExportModal('${item.id}')" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg transition-colors">
+                            🚀 تصدير للمتجر
+                        </button>
+                        <button onclick="deleteProduct('${item.id}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="حذف المنتج">
+                            🗑️
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function getCategoryEmoji(cat) {
+            switch(cat) {
+                case 'ebook': return '📘';
+                case 'template': return '🗓️';
+                case 'course': return '🎥';
+                case 'software': return '🔑';
+                default: return '📦';
+            }
+        }
+
+        // تغيير الغلاف بناءً على النمط المحدد في الصانع
+        function updateMockupPreview() {
+            const titleInput = document.getElementById("p-title").value || "عنوان منتجك الرقمي يظهر هنا";
+            const descInput = document.getElementById("p-desc").value || "هنا يظهر مقتطف قصير من وصف منتجك الرائع لجذب انتباه العملاء وزيادة رغبتهم بالشراء فوراً.";
+            const priceInput = document.getElementById("p-price").value || "49";
+            const style = document.getElementById("p-mockup-style").value;
+            const cat = document.getElementById("p-category").value;
+
+            // تحديث نصوص المعاينة
+            document.getElementById("preview-title").innerText = titleInput;
+            document.getElementById("preview-desc").innerText = descInput;
+            document.getElementById("preview-price").innerText = `${priceInput} ر.س`;
+            document.getElementById("preview-icon").innerText = getCategoryEmoji(cat);
+
+            // تحديث بطاقة الغلاف
+            const previewTag = document.getElementById("preview-tag");
+            const mockup = document.getElementById("mockup-container");
+
+            if (cat === 'ebook') previewTag.innerText = "كتاب إلكتروني بريميوم";
+            else if (cat === 'template') previewTag.innerText = "قالب / منظم رقمي";
+            else if (cat === 'course') previewTag.innerText = "كورس ودليل مصور";
+            else if (cat === 'software') previewTag.innerText = "اشتراك / ترخيص برمجيات";
+
+            mockup.className = "w-full aspect-[3/4] rounded-2xl p-8 flex flex-col justify-between text-white relative overflow-hidden transition-all duration-300 shadow-xl";
+
+            if (style === 'gradient-purple') {
+                mockup.classList.add("bg-gradient-to-tr", "from-indigo-800", "via-indigo-600", "to-violet-500");
+            } else if (style === 'gradient-emerald') {
+                mockup.classList.add("bg-gradient-to-tr", "from-emerald-800", "via-teal-600", "to-emerald-500");
+            } else if (style === 'gradient-sunset') {
+                mockup.classList.add("bg-gradient-to-tr", "from-rose-700", "via-amber-600", "to-orange-500");
+            } else if (style === 'dark-slate') {
+                mockup.classList.add("bg-gradient-to-tr", "from-slate-900", "via-slate-800", "to-slate-700");
+            }
+        }
+
+        // توليد رابط ملف عشوائي للتجربة
+        function generateMockFileLink() {
+            const randomId = Math.random().toString(36).substring(2, 10);
+            document.getElementById("p-file-link").value = `https://digiflow-vault.com/download/file-${randomId}.zip`;
+            showToast("تم توليد رابط تحميل آمن عشوائي لتجربة التوريد!", "⚡");
+        }
+
+        // معالجة تصنيع وإضافة المنتج الرقمي
+        function handleCreateProduct() {
+            const title = document.getElementById("p-title").value;
+            const cat = document.getElementById("p-category").value;
+            const desc = document.getElementById("p-desc").value;
+            const price = parseFloat(document.getElementById("p-price").value);
+            const fileLink = document.getElementById("p-file-link").value;
+            const style = document.getElementById("p-mockup-style").value;
+
+            let categoryAr = "كتاب إلكتروني";
+            if (cat === 'template') categoryAr = "قوالب ومنظمات";
+            else if (cat === 'course') categoryAr = "دليل وكورسات";
+            else if (cat === 'software') categoryAr = "ترخيص برمجيات";
+
+            const newProduct = {
+                id: `prod-${Math.floor(Math.random() * 900) + 100}`,
+                title: title,
+                category: cat,
+                categoryAr: categoryAr,
+                price: price,
+                licencesCount: "تراخيص لا نهائية",
+                fileLink: fileLink,
+                style: style
+            };
+
+            activeInventory.unshift(newProduct);
+            updateDashboardStats();
+            showToast("تم تصنيع منتجك الرقمي وحفظه بالمستودع بنجاح!", "🎨");
+
+            // تصفير حقول النموذج وإعادة المعاينة
+            document.getElementById("creator-form").reset();
+            updateMockupPreview();
+
+            // تحويل للوحة التحكم لعرض المنتج
+            setTimeout(() => {
+                switchTab('dashboard');
+            }, 1000);
+        }
+
+        // استيراد قالب PLR من دليل التوريد
+        function importPLRProduct(plrType) {
+            if (plrType === 'ebook-trading') {
+                document.getElementById("p-title").value = "دليل البدء في التجارة الرقمية 2026";
+                document.getElementById("p-category").value = "ebook";
+                document.getElementById("p-desc").value = "دليل شامل يعلمك خطوة بخطوة كيف تختار فكرة مشروعك الرقمي، وتبني متجر إلكتروني، وتصنع أول منتج رقمي مرغوب لتبدأ جني الأرباح.";
+                document.getElementById("p-price").value = "49";
+                document.getElementById("p-file-link").value = "https://digiflow-plr-vault.com/files/digital-trading-guide-plr.pdf";
+                document.getElementById("p-mockup-style").value = "gradient-purple";
+            } else if (plrType === 'planner-2026') {
+                document.getElementById("p-title").value = "مخطط الأهداف والإنتاجية السنوية لعام 2026";
+                document.getElementById("p-category").value = "template";
+                document.getElementById("p-desc").value = "أجندة رقمية احترافية قابلة لإعادة التعديل والتخصيص الفوري، مناسبة للتنظيم والجدولة اليومية وزيادة التركيز وتحقيق الأهداف لعام 2026.";
+                document.getElementById("p-price").value = "39";
+                document.getElementById("p-file-link").value = "https://digiflow-plr-vault.com/files/productivity-notion-template-url";
+                document.getElementById("p-mockup-style").value = "gradient-emerald";
+            } else if (plrType === 'course-ai') {
+                document.getElementById("p-title").value = "كورس إنشاء المحتوى باستخدام الذكاء الاصطناعي";
+                document.getElementById("p-category").value = "course";
+                document.getElementById("p-desc").value = "كورس فيديو مسجل بجودة عالية مرخص للبيع المباشر يعلم المشترين كيفية توليد أفكار المحتوى والمقاطع القصيرة بذكاء عبر أفضل تطبيقات الذكاء الاصطناعي لعام 2026.";
+                document.getElementById("p-price").value = "99";
+                document.getElementById("p-file-link").value = "https://drive.google.com/drive/folders/ai-video-course-plr";
+                document.getElementById("p-mockup-style").value = "gradient-sunset";
+            }
+
+            updateMockupPreview();
+            switchTab('creator');
+            showToast("تم استيراد قالب الـ PLR للصانع! يمكنك تخصيصه وتعديله الآن.", "📥");
+        }
+
+        // حذف منتج من المستودع
+        function deleteProduct(id) {
+            activeInventory = activeInventory.filter(item => item.id !== id);
+            updateDashboardStats();
+            showToast("تم إزالة المنتج من مستودعك المحلي.", "🗑️");
+        }
+
+        // توليد مفاتيح تراخيص جديدة
+        function generateLicenseKeys() {
+            const prefix = document.getElementById("lic-prefix").value.toUpperCase() || "KEY";
+            const qty = parseInt(document.getElementById("lic-quantity").value) || 10;
+
+            temporaryGeneratedKeys = [];
+            for (let i = 0; i < qty; i++) {
+                const randomPart1 = Math.random().toString(36).substring(2, 7).toUpperCase();
+                const randomPart2 = Math.random().toString(36).substring(2, 7).toUpperCase();
+                const randomPart3 = Math.random().toString(36).substring(2, 7).toUpperCase();
+                temporaryGeneratedKeys.push(`${prefix}-${randomPart1}-${randomPart2}-${randomPart3}`);
+            }
+
+            const listDiv = document.getElementById("generated-keys-list");
+            listDiv.innerHTML = "";
+            temporaryGeneratedKeys.forEach(key => {
+                const span = document.createElement("span");
+                span.className = "block text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-100 mb-1";
+                span.innerText = key;
+                listDiv.appendChild(span);
+            });
+
+            showToast(`تم توليد ${qty} مفاتيح تراخيص فريدة بنجاح!`, "🔑");
+        }
+
+        // نسخ المفاتيح المولدة للحافظة
+        function copyGeneratedKeys() {
+            if (temporaryGeneratedKeys.length === 0) {
+                showToast("لا توجد مفاتيح منسوخة، يرجى التوليد أولاً.", "❌");
+                return;
+            }
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = temporaryGeneratedKeys.join("\n");
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            showToast("تم نسخ جميع مفاتيح الترخيص إلى الحافظة بنجاح!", "📋");
+        }
+
+        // مسح قائمة المفاتيح
+        function clearKeysList() {
+            temporaryGeneratedKeys = [];
+            document.getElementById("generated-keys-list").innerHTML = `
+                <span class="text-slate-400 block text-center py-4">لا توجد مفاتيح تولدت للتو. حدد البادئة واضغط زر التوليد.</span>
+            `;
+            showToast("تم تفريغ قائمة المفاتيح المؤقتة.", "🧹");
+        }
+
+        // محاكاة ربط المنصات والمتاجر
+        function simulateIntegration(storeName) {
+            showToast(`جارٍ الاتصال ببوابة متجر ${storeName}...`, "⏳");
+            setTimeout(() => {
+                showToast(`تم ربط حسابك في ${storeName} بنجاح! جاهز للتصدير المباشر.`, "✓");
+            }, 1200);
+        }
+
+        // فتح نافذة التصدير المنبثقة لمنتج معين
+        let productToExport = null;
+        function openExportModal(id) {
+            const item = activeInventory.find(prod => prod.id === id);
+            if (!item) return;
+
+            productToExport = item;
+            document.getElementById("modal-product-title").innerText = item.title;
+            document.getElementById("modal-product-price").innerText = item.price;
+            document.getElementById("export-modal").classList.remove("hidden");
+        }
+
+        function closeExportModal() {
+            document.getElementById("export-modal").classList.add("hidden");
+            productToExport = null;
+        }
+
+        // تنفيذ محاكاة تصدير وتوريد المنتج للمتجر المختار
+        function executeExportSimulation() {
+            if (!productToExport) return;
+
+            const storeSelect = document.getElementById("modal-store-select");
+            const storeName = storeSelect.options[storeSelect.selectedIndex].text;
+
+            closeExportModal();
+            showToast(`جارٍ تهيئة وتجهيز ملفات منتج: ${productToExport.title}...`, "📦");
+
+            setTimeout(() => {
+                showToast(`جارٍ رفع المنتج وتراخيصه إلى ${storeName}...`, "⚡");
+                setTimeout(() => {
+                    showToast(`تم تصدير وتوريد المنتج بنجاح! متوفر للبيع والتحميل الآن.`, "🎉");
+                }, 1500);
+            }, 1000);
+        }
+
+        // تحديث أيقونة تصنيف الصانع
+        function updateCategoryIcon() {
+            updateMockupPreview();
+        }
+
+        // إشعار توست مخصص
+        function showToast(message, icon = "✨") {
+            const toast = document.getElementById("toast");
+            document.getElementById("toast-message").innerText = message;
+            document.getElementById("toast-icon").innerText = icon;
+
+            // دخول حركي
+            toast.classList.remove("translate-y-24", "opacity-0");
+            toast.classList.add("translate-y-0", "opacity-100");
+
+            // خروج تلقائي بعد 3 ثوانٍ
+            setTimeout(() => {
+                toast.classList.add("translate-y-24", "opacity-0");
+                toast.classList.remove("translate-y-0", "opacity-100");
+            }, 3000);
+        }
+
+        // تهيئة عند بدء التشغيل
+        window.onload = function() {
+            updateDashboardStats();
+            
+            // مستمعو الأحداث لربط نموذج الصانع بالمعاينة الحية فور الكتابة
+            document.getElementById("p-title").addEventListener("input", updateMockupPreview);
+            document.getElementById("p-desc").addEventListener("input", updateMockupPreview);
+            document.getElementById("p-price").addEventListener("input", updateMockupPreview);
+        };
+    </script>
+</body>
+</html>
+
